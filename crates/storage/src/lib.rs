@@ -80,7 +80,7 @@ impl Storage {
                 StateRepository::new(Arc::clone(&db)),
                 DEFAULT_SNAPSHOT_KEEP,
             ),
-            cache: StorageCache::new(),
+            cache: StorageCache::new(256),
         })
     }
 
