@@ -1,0 +1,24 @@
+[package]
+name        = "primitives"
+version     = "0.1.0"
+edition     = "2021"
+description = "Shared primitive types and constants for the blockchain — imported by every other crate"
+license     = "MIT"
+
+[features]
+default = []
+# Gate test helpers (fixed timestamps, deterministic values) behind this flag.
+test-utils = []
+
+[dependencies]
+# Serialization — all public types must be serializable for network and storage
+serde       = { version = "1.0.203", features = ["derive"] }
+
+# Ergonomic error types — zero runtime cost
+thiserror   = "1.0.61"
+
+# Internal crypto crate — for HashDigest and Address re-use
+crypto      = { path = "../crypto" }
+
+[dev-dependencies]
+serde_json  = "1.0.120"

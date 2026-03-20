@@ -1,0 +1,10 @@
+[package]
+name        = "upgrade"
+version     = "0.1.0"
+edition     = "2021"
+description = "Protocol upgrade management — hard fork and soft fork scheduling"
+license     = "MIT"
+
+[dependencies]
+primitives  = { path = "../primitives" }
+serde       = { version = "1.0.203", features = ["derive"] }

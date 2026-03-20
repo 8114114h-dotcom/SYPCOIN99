@@ -1,0 +1,13 @@
+[package]
+name    = "explorer"
+version = "0.1.0"
+edition = "2021"
+description = "Sypcoin CLI block explorer — query chain data via RPC"
+
+[[bin]]
+name = "sypcoin-explorer"
+path = "src/main.rs"
+
+[dependencies]
+serde_json  = "1.0.120"
+hex         = "0.4.3"

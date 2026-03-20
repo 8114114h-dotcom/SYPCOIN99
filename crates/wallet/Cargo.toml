@@ -1,0 +1,27 @@
+[package]
+name        = "wallet"
+version     = "0.1.0"
+edition     = "2021"
+description = "Wallet — key management, HD derivation, mnemonic, address book, transaction signing"
+license     = "MIT"
+
+[features]
+default    = []
+test-utils = []
+
+[dependencies]
+crypto      = { path = "../crypto" }
+primitives  = { path = "../primitives" }
+transaction = { path = "../transaction" }
+
+serde       = { version = "1.0.203", features = ["derive"] }
+serde_json  = "1.0.120"
+thiserror   = "1.0.61"
+hex         = "0.4.3"
+zeroize     = { version = "1.7.0", features = ["derive"] }
+rand        = { version = "0.8.5", features = ["getrandom"] }
+
+# SHA-2 for PBKDF2 key derivation and HMAC-MAC
+sha2        = "0.10.8"
+
+[dev-dependencies]

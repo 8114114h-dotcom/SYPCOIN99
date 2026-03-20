@@ -1,0 +1,22 @@
+[package]
+name        = "state"
+version     = "0.1.0"
+edition     = "2021"
+description = "World state management — accounts, balances, nonces, transitions, and rollback"
+license     = "MIT"
+
+[features]
+default    = []
+test-utils = []
+
+[dependencies]
+crypto      = { path = "../crypto" }
+primitives  = { path = "../primitives" }
+transaction = { path = "../transaction" }
+
+serde       = { version = "1.0.203", features = ["derive"] }
+thiserror   = "1.0.61"
+hex         = "0.4.3"
+
+[dev-dependencies]
+serde_json  = "1.0.120"

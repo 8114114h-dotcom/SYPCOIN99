@@ -1,0 +1,14 @@
+[package]
+name        = "security"
+version     = "0.1.0"
+edition     = "2021"
+description = "Security layer — anti-spam, replay protection, signature cache"
+license     = "MIT"
+
+[dependencies]
+crypto      = { path = "../crypto" }
+primitives  = { path = "../primitives" }
+transaction = { path = "../transaction" }
+
+thiserror   = "1.0.61"
+hex         = "0.4.3"

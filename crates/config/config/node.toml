@@ -1,0 +1,37 @@
+# node.toml — Sypcoin Node Configuration (Mainnet)
+# Copy to your data directory and edit before starting.
+
+log_level = "info"
+
+[network]
+listen_addr        = "0.0.0.0:30303"
+max_peers          = 40
+max_inbound        = 32
+max_outbound       = 8
+bootstrap_peers    = [
+    "seed1.sypcoin.network:30303",
+    "seed2.sypcoin.network:30303",
+    "seed3.sypcoin.network:30303",
+]
+ping_interval_ms   = 30000
+connect_timeout_ms = 5000
+
+[consensus]
+mine_on_start     = false
+# miner_address   = "0xYourAddressHere"   # uncomment to enable mining
+initial_difficulty = 1000
+target_block_time_ms = 60000
+max_reorg_depth    = 100
+
+[storage]
+data_dir           = "./data"
+db_backend         = "rocksdb"
+snapshot_interval  = 1000
+snapshots_to_keep  = 20
+max_db_size_mb     = 0
+
+[rpc]
+enabled            = true
+listen_addr        = "0.0.0.0:8545"
+max_connections    = 100
+cors_origins       = []

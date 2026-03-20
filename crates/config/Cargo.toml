@@ -1,0 +1,19 @@
+[package]
+name        = "config"
+version     = "0.1.0"
+edition     = "2021"
+description = "Node configuration — network, consensus, storage, RPC settings loaded from TOML"
+license     = "MIT"
+
+[features]
+default    = []
+test-utils = []
+
+[dependencies]
+primitives  = { path = "../primitives" }
+
+serde       = { version = "1.0.203", features = ["derive"] }
+toml        = "0.8.12"
+thiserror   = "1.0.61"
+
+[dev-dependencies]

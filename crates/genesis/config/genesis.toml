@@ -1,0 +1,29 @@
+# genesis.toml — MYCHAIN Genesis Configuration
+#
+# CONSENSUS CRITICAL: Every node must use an identical copy of this file.
+# Any difference produces a different genesis hash → network split.
+#
+# DO NOT modify after mainnet launch.
+
+chain_id           = 1
+chain_name         = "Sypcoin"
+initial_difficulty = 1000
+block_time_ms      = 10000
+timestamp          = 1700000000000
+message            = "Sypcoin: decentralized, secure, open"
+
+# Pre-funded genesis accounts.
+# Replace with actual foundation/team addresses before mainnet.
+# Balances are in TOKEN units (6 decimal places).
+# Total must not exceed 21,000,000 tokens.
+
+[[initial_accounts]]
+address = "0x0000000000000000000000000000000000000000"
+balance = "0.000000"
+label   = "placeholder — replace before launch"
+
+# Example:
+# [[initial_accounts]]
+# address = "0xYourChecksumAddressHere"
+# balance = "1000000.000000"
+# label   = "Foundation"

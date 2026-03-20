@@ -1,0 +1,23 @@
+[package]
+name        = "execution"
+version     = "0.1.0"
+edition     = "2021"
+description = "Block and transaction execution engine — bridges state, block, and transaction layers"
+license     = "MIT"
+
+[features]
+default    = []
+test-utils = []
+
+[dependencies]
+crypto      = { path = "../crypto" }
+primitives  = { path = "../primitives" }
+transaction = { path = "../transaction" }
+block       = { path = "../block" }
+state       = { path = "../state" }
+
+serde       = { version = "1.0.203", features = ["derive"] }
+thiserror   = "1.0.61"
+
+[dev-dependencies]
+serde_json  = "1.0.120"

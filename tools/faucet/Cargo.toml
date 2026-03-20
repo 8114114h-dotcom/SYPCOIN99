@@ -1,0 +1,19 @@
+[package]
+name    = "faucet"
+version = "0.1.0"
+edition = "2021"
+description = "MYCHAIN testnet faucet — sends tokens to test addresses via RPC"
+
+[[bin]]
+name = "sypcoin-faucet"
+path = "src/main.rs"
+
+[dependencies]
+crypto      = { path = "../../crates/crypto" }
+primitives  = { path = "../../crates/primitives" }
+transaction = { path = "../../crates/transaction" }
+wallet      = { path = "../../crates/wallet", features = ["test-utils"] }
+
+serde_json  = "1.0.120"
+hex         = "0.4.3"
+bincode     = "1.3.3"

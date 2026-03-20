@@ -1,0 +1,20 @@
+[package]
+name    = "miner"
+version = "0.1.0"
+edition = "2021"
+description = "Standalone mining tool — connects to a node via RPC and mines blocks"
+
+[[bin]]
+name = "sypcoin-miner"
+path = "src/main.rs"
+
+[dependencies]
+crypto      = { path = "../../crates/crypto" }
+primitives  = { path = "../../crates/primitives" }
+block       = { path = "../../crates/block" }
+consensus   = { path = "../../crates/consensus" }
+wallet      = { path = "../../crates/wallet", features = ["test-utils"] }
+
+serde       = { version = "1.0.203", features = ["derive"] }
+serde_json  = "1.0.120"
+hex         = "0.4.3"

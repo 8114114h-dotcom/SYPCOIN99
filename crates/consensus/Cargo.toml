@@ -1,0 +1,23 @@
+[package]
+name        = "consensus"
+version     = "0.1.0"
+edition     = "2021"
+description = "Proof-of-Work consensus — mining, difficulty adjustment, chain management, fork choice"
+license     = "MIT"
+
+[features]
+default    = []
+test-utils = []
+
+[dependencies]
+crypto      = { path = "../crypto" }
+primitives  = { path = "../primitives" }
+block       = { path = "../block" }
+
+serde       = { version = "1.0.203", features = ["derive"] }
+thiserror   = "1.0.61"
+hex         = "0.4.3"
+
+[dev-dependencies]
+transaction = { path = "../transaction" }
+serde_json  = "1.0.120"

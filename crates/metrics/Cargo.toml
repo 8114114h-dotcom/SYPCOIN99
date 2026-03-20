@@ -1,0 +1,11 @@
+[package]
+name        = "metrics"
+version     = "0.1.0"
+edition     = "2021"
+description = "Node metrics — performance counters, Prometheus export, and logging setup"
+license     = "MIT"
+
+[dependencies]
+primitives  = { path = "../primitives" }
+serde       = { version = "1.0.203", features = ["derive"] }
+thiserror   = "1.0.61"

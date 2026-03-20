@@ -1,0 +1,13 @@
+[package]
+name        = "sypcoin-cli"
+version     = "0.1.0"
+edition     = "2021"
+description = "Sypcoin command-line client — talks to a running node via RPC"
+license     = "MIT"
+
+[[bin]]
+name = "sypcoin-cli"
+path = "src/main.rs"
+
+[dependencies]
+serde_json  = "1.0"
