@@ -152,10 +152,28 @@ impl NodeRunner {
             for tx_hex in txs {
                 if let Ok(bytes) = hex::decode(&tx_hex) {
                     if let Ok(tx) = bincode::deserialize::<transaction::Transaction>(&bytes) {
+                        // 1. التحقق من التوقيع والبنية
+                        if let Err(e) = transaction::TransactionValidator::validate_structure(&tx) {
+                            eprintln!("[WARN] TX invalid structure: {}", e);
+                            continue;
+                        }
+                        // 2. التحقق من الرصيد والـ nonce
+                        let sender_balance = self.services.executor.state().get_balance(tx.from());
+                        let sender_nonce   = self.services.executor.state().get_nonce(tx.from());
+                        let now            = primitives::Timestamp::now();
+                        if let Err(e) = transaction::TransactionValidator::validate_against_state(
+                            &tx, sender_balance, sender_nonce, now
+                        ) {
+                            eprintln!("[WARN] TX state invalid: {}", e);
+                            continue;
+                        }
+                        // 3. أضفها للـ mempool
                         match self.services.mempool.add(tx) {
                             Ok(_)  => eprintln!("[INFO] TX added to mempool"),
                             Err(e) => eprintln!("[WARN] TX rejected: {}", e),
                         }
+                    } else {
+                        eprintln!("[WARN] TX deserialization failed");
                     }
                 }
             }
