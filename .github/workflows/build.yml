@@ -5,14 +5,11 @@ on:
     branches: [ main, master ]
 
 jobs:
-  build:
+  build-linux:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-
-      - name: Install Rust
-        uses: dtolnay/rust-toolchain@stable
-
+      - uses: dtolnay/rust-toolchain@stable
       - name: Cache cargo
         uses: actions/cache@v4
         with:
@@ -21,14 +18,44 @@ jobs:
             ~/.cargo/git
             target
           key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
-
-      - name: Build
+      - name: Build Linux x86
         run: cargo build -p node -p sypcoin-cli --release --features storage/rocksdb-backend
-
-      - name: Upload binaries
+      - name: Upload Linux
         uses: actions/upload-artifact@v4
         with:
           name: sypcoin-linux-x86
           path: |
             target/release/sypcoin
             target/release/sypcoin-cli
+
+  build-android:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: aarch64-linux-android
+      - name: Install Android NDK
+        run: |
+          sudo apt-get install -y unzip
+          wget -q https://dl.google.com/android/repository/android-ndk-r25c-linux.zip
+          unzip -q android-ndk-r25c-linux.zip
+          echo "ANDROID_NDK_HOME=$PWD/android-ndk-r25c" >> $GITHUB_ENV
+          echo "$PWD/android-ndk-r25c/toolchains/llvm/prebuilt/linux-x86_64/bin" >> $GITHUB_PATH
+      - name: Configure cross-compile
+        run: |
+          mkdir -p ~/.cargo
+          cat >> ~/.cargo/config.toml << 'CARGO'
+          [target.aarch64-linux-android]
+          ar = "llvm-ar"
+          linker = "aarch64-linux-android21-clang"
+          CARGO
+      - name: Build Android ARM64
+        run: cargo build -p node -p sypcoin-cli --release --target aarch64-linux-android --features storage/rocksdb-backend
+      - name: Upload Android
+        uses: actions/upload-artifact@v4
+        with:
+          name: sypcoin-android-arm64
+          path: |
+            target/aarch64-linux-android/release/sypcoin
+            target/aarch64-linux-android/release/sypcoin-cli
