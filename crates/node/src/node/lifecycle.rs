@@ -90,7 +90,7 @@ pub fn build_services(config: &NodeConfig) -> Result<NodeServices, String> {
     loop {
         match storage.get_block_at(primitives::BlockHeight::new(height)).map_err(|e| e.to_string())? {
             Some(block) => {
-                let _ = blockchain.add_block(block); // ignore validation errors on replay
+                blockchain.add_block_unchecked(block); // ignore validation errors on replay
                 height += 1;
             }
             None => break,

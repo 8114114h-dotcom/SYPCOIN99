@@ -98,6 +98,15 @@ impl Blockchain {
     ///
     /// Runs full consensus validation before appending.
     /// Updates difficulty if this block triggers an adjustment.
+    /// Add a block without validation — used only for replaying stored blocks.
+    pub fn add_block_unchecked(&mut self, block: Block) {
+        let height  = block.height().as_u64();
+        let hash_hex = hex::encode(block.hash().as_bytes());
+        self.blocks.push(block);
+        self.index.insert(hash_hex, height);
+        self.maybe_adjust_difficulty(height);
+    }
+
     pub fn add_block(&mut self, block: Block) -> Result<(), ConsensusError> {
         // Reject duplicates.
         if self.contains(&block.hash()) {
