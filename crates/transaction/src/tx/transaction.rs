@@ -211,7 +211,8 @@ impl Transaction {
     pub fn from_wallet_bytes(bytes: &[u8]) -> Result<Self, ()> {
         if bytes.len() != 210 { return Err(()); }
 
-        let tx_id     = HashDigest::from_bytes(bytes[0..32].try_into().map_err(|_| ())?);
+        let tx_id_arr: [u8; 32] = bytes[0..32].try_into().map_err(|_| ())?;
+        let tx_id = crypto::sha256(&tx_id_arr);
         // from[20] at 32..52 — unused, derived from pubkey
         let to_bytes: [u8; 20] = bytes[52..72].try_into().map_err(|_| ())?;
         let pk_bytes: [u8; 32] = bytes[72..104].try_into().map_err(|_| ())?;
