@@ -295,6 +295,9 @@ impl NodeRunner {
 
                 eprintln!("[INFO] Block mined! height={} nonce={} time={}ms", h, nonce, ms);
 
+                if let Err(e) = self.services.storage.save_block(&block) {
+                    eprintln!("[WARN] Failed to save block: {}", e);
+                }
                 if let Err(e) = self.services.blockchain.add_block(block.clone()) {
                     eprintln!("[WARN] Block rejected: {}", e); return;
                 }
