@@ -151,7 +151,7 @@ impl NodeRunner {
                 .collect();
             for tx_hex in txs {
                 if let Ok(bytes) = hex::decode(&tx_hex) {
-                    if let Ok(tx) = bincode::deserialize::<transaction::Transaction>(&bytes) {
+                    if let Ok(tx) = transaction::Transaction::from_wallet_bytes(&bytes).map_err(|_| bincode::Error::from(bincode::ErrorKind::Custom("wallet parse failed".into()))) {
                         // 1. التحقق من التوقيع والبنية
                         if let Err(e) = transaction::TransactionValidator::validate_structure(&tx) {
                             eprintln!("[WARN] TX invalid structure: {}", e);

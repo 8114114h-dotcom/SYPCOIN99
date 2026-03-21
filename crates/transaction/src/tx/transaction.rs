@@ -201,6 +201,52 @@ impl Transaction {
         buf
     }
 
+
+    /// Parse a transaction sent from the Kotlin wallet (bincode format, 210 bytes).
+    ///
+    /// Layout:
+    ///   tx_id(32) | from(20) | to(20) | pubkey(32) | sig(64) |
+    ///   amount(8) | fee(8) | nonce(8) | timestamp(8) | chain_id(8) |
+    ///   version(1) | data_none(1)
+    pub fn from_wallet_bytes(bytes: &[u8]) -> Result<Self, ()> {
+        if bytes.len() != 210 { return Err(()); }
+
+        let tx_id     = HashDigest::from_bytes(bytes[0..32].try_into().map_err(|_| ())?);
+        // from[20] at 32..52 — unused, derived from pubkey
+        let to_bytes: [u8; 20] = bytes[52..72].try_into().map_err(|_| ())?;
+        let pk_bytes: [u8; 32] = bytes[72..104].try_into().map_err(|_| ())?;
+        let sig_bytes: [u8; 64] = bytes[104..168].try_into().map_err(|_| ())?;
+
+        let amount_micro  = u64::from_le_bytes(bytes[168..176].try_into().map_err(|_| ())?);
+        let fee_micro     = u64::from_le_bytes(bytes[176..184].try_into().map_err(|_| ())?);
+        let nonce_val     = u64::from_le_bytes(bytes[184..192].try_into().map_err(|_| ())?);
+        let timestamp_ms  = u64::from_le_bytes(bytes[192..200].try_into().map_err(|_| ())?);
+        let chain_id_val  = u64::from_le_bytes(bytes[200..208].try_into().map_err(|_| ())?);
+
+        let public_key = PublicKey::from_bytes(pk_bytes).map_err(|_| ())?;
+        let from       = Address::from_public_key(&public_key);
+        let to         = Address::from_raw_bytes(to_bytes);
+        let signature  = Signature::from_bytes(sig_bytes).map_err(|_| ())?;
+        let amount     = Amount::from_micro(amount_micro).map_err(|_| ())?;
+        let fee        = Amount::from_micro(fee_micro).map_err(|_| ())?;
+        let nonce      = Nonce::new(nonce_val);
+        let timestamp  = Timestamp::from_millis(timestamp_ms);
+
+        Ok(Transaction {
+            tx_id,
+            from,
+            to,
+            public_key,
+            signature,
+            amount,
+            fee,
+            nonce,
+            timestamp,
+            chain_id: chain_id_val,
+            version:  bytes[208],
+            data:     None,
+        })
+    }
     /// Serialized size in bytes (fixed: 156 = 92 payload + 64 signature).
     pub fn size_bytes(&self) -> usize { 156 }
 
