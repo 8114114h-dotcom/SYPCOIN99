@@ -304,6 +304,9 @@ impl NodeRunner {
                 if let Err(e) = self.services.executor.execute_block(&block) {
                     eprintln!("[WARN] Execution failed: {}", e); return;
                 }
+                // Save state snapshot after each block for persistence.
+                let snap = self.services.executor.snapshot();
+                let _ = self.services.storage.save_snapshot(&snap);
 
                 for tx in block.transactions() {
                     self.services.mempool.remove(tx.tx_id());
