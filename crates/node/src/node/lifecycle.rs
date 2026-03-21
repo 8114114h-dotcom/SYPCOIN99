@@ -85,12 +85,14 @@ pub fn build_services(config: &NodeConfig) -> Result<NodeServices, String> {
     let mut blockchain = Blockchain::new(genesis_block, initial_difficulty)
         .map_err(|e| e.to_string())?;
 
-    // Replay all blocks from storage to restore chain state.
+    // Replay all blocks from storage to restore chain state + executor state.
+    let mut executor = execution::Executor::new(initial_state);
     let mut height = 1u64;
     loop {
         match storage.get_block_at(primitives::BlockHeight::new(height)).map_err(|e| e.to_string())? {
             Some(block) => {
-                blockchain.add_block_unchecked(block); // ignore validation errors on replay
+                blockchain.add_block_unchecked(block.clone());
+                let _ = executor.execute_block(&block); // restore state
                 height += 1;
             }
             None => break,
@@ -99,9 +101,6 @@ pub fn build_services(config: &NodeConfig) -> Result<NodeServices, String> {
     if height > 1 {
         eprintln!("[INFO] Restored blockchain — height=#{}", height - 1);
     }
-
-    // ── 4. Build executor from state ──────────────────────────────────────────
-    let executor = Executor::new(initial_state);
 
     // ── 5. Init mempool ───────────────────────────────────────────────────────
     let mempool = Mempool::with_defaults();
