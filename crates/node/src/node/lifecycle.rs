@@ -80,10 +80,25 @@ pub fn build_services(config: &NodeConfig) -> Result<NodeServices, String> {
         }
     };
 
-    // ── 3. Build blockchain ───────────────────────────────────────────────────
+    // ── 3. Build blockchain — restore all saved blocks ───────────────────────
     let initial_difficulty = config.consensus.initial_difficulty;
-    let blockchain = Blockchain::new(genesis_block, initial_difficulty)
+    let mut blockchain = Blockchain::new(genesis_block, initial_difficulty)
         .map_err(|e| e.to_string())?;
+
+    // Replay all blocks from storage to restore chain state.
+    let mut height = 1u64;
+    loop {
+        match storage.get_block_at(primitives::BlockHeight::new(height)).map_err(|e| e.to_string())? {
+            Some(block) => {
+                let _ = blockchain.add_block(block); // ignore validation errors on replay
+                height += 1;
+            }
+            None => break,
+        }
+    }
+    if height > 1 {
+        eprintln!("[INFO] Restored blockchain — height=#{}", height - 1);
+    }
 
     // ── 4. Build executor from state ──────────────────────────────────────────
     let executor = Executor::new(initial_state);
